@@ -36,9 +36,15 @@
       NSString *sourcePath = call.arguments[@"source_path"];
       NSNumber *ratioX = call.arguments[@"ratio_x"];
       NSNumber *ratioY = call.arguments[@"ratio_y"];
+      NSNumber *circularCrop  = call.arguments[@"circular_crop"];
       
       UIImage *image = [UIImage imageWithContentsOfFile:sourcePath];
-      TOCropViewController *cropViewController = [[TOCropViewController alloc] initWithImage:image];
+      
+      TOCropViewCroppingStyle croppingStyle = TOCropViewCroppingStyleDefault;
+      if (circularCrop != (id)[NSNull null] && [circularCrop boolValue]) {
+        croppingStyle = TOCropViewCroppingStyleCircular; 
+      }
+      TOCropViewController *cropViewController = [[TOCropViewController alloc] initWithCroppingStyle:croppingStyle image:image];
       cropViewController.delegate = self;
       if (ratioX != (id)[NSNull null] && ratioY != (id)[NSNull null]) {
           cropViewController.customAspectRatio = CGSizeMake([ratioX floatValue], [ratioY floatValue]);

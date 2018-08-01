@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter/services.dart';
 
 class ImageCropper {
@@ -18,8 +17,8 @@ class ImageCropper {
       double ratioY,
       int maxWidth,
       int maxHeight,
-      String toolbarTitle,  // for only Android
-      Color toolbarColor,     // for only Android
+      bool circularCrop,
+      ImageCropperAndroidOptions androidOptions
   }) async {
     assert(sourcePath != null);
 
@@ -39,10 +38,34 @@ class ImageCropper {
           'max_height': maxHeight,
           'ratio_x': ratioX,
           'ratio_y': ratioY,
-          'toolbar_title': toolbarTitle,
-          'toolbar_color': toolbarColor?.value
+          'circular_crop': circularCrop,
+          // Android Options
+          'android_toolbar_title': androidOptions?.toolbarTitle,
+          'android_toolbar_color': androidOptions?.toolbarColor?.value,
+          'android_hide_crop_grid': androidOptions?.androidHideCropGrid,
+          'android_dimmed_layer_color': androidOptions?.androidDimmedLayerColor?.value,
+          'android_frame_color': androidOptions?.androidFrameColor?.value
           }
         );
     return resultPath == null ? null : new File(resultPath);
   }
+
+  
+}
+
+class ImageCropperAndroidOptions {
+  String toolbarTitle;
+  Color toolbarColor;
+  bool androidHideCropGrid;
+  Color androidDimmedLayerColor;
+  Color androidFrameColor;
+
+  ImageCropperAndroidOptions({
+    this.toolbarTitle,
+    this.toolbarColor,
+    this.androidHideCropGrid,
+    this.androidDimmedLayerColor,
+    this.androidFrameColor,
+  });
+
 }

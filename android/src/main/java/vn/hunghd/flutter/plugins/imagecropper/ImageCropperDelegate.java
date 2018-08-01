@@ -35,8 +35,14 @@ public class ImageCropperDelegate implements PluginRegistry.ActivityResultListen
         Integer maxHeight = call.argument("max_height");
         Double ratioX = call.argument("ratio_x");
         Double ratioY = call.argument("ratio_y");
-        String title = call.argument("toolbar_title");
-        Long color = call.argument("toolbar_color");
+        Boolean circularCrop  = call.argument("circular_crop");
+        
+        String title = call.argument("android_toolbar_title");
+        Integer toolbarColor = getColorArgument(call, "android_toolbar_color");
+        Boolean hideCropGrid = call.argument("android_hide_crop_grid");
+        Integer dimmedLayerColor = getColorArgument(call, "android_dimmed_layer_color");
+        Integer frameColor = getColorArgument(call, "android_frame_color");
+
         methodCall = call;
         pendingResult = result;
 
@@ -48,13 +54,26 @@ public class ImageCropperDelegate implements PluginRegistry.ActivityResultListen
         UCrop.Options options = new UCrop.Options();
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
         options.setCompressionQuality(90);
+
+        if(circularCrop != null && circularCrop) {
+            options.setCircleDimmedLayer(true);
+        }
+        if(hideCropGrid != null && hideCropGrid) {
+            options.setShowCropGrid(false);
+        }
+        if(dimmedLayerColor != null) {
+            options.setDimmedLayerColor(dimmedLayerColor.intValue());
+        }
+        if(frameColor != null) {
+            options.setCropFrameColor(frameColor.intValue());
+        }
         if (title != null) {
             options.setToolbarTitle(title);
         }
-        if (color != null) {
-            int intColor = color.intValue();
-            options.setToolbarColor(intColor);
-            options.setStatusBarColor(darkenColor(intColor));
+        if (toolbarColor != null) {
+            int intToolbarColor  = toolbarColor.intValue();
+            options.setToolbarColor(intToolbarColor);
+            options.setStatusBarColor(darkenColor(intToolbarColor));
         }
         UCrop cropper = UCrop.of(sourceUri, destinationUri).withOptions(options);
         if (maxWidth != null && maxHeight != null) {
@@ -64,6 +83,17 @@ public class ImageCropperDelegate implements PluginRegistry.ActivityResultListen
             cropper.withAspectRatio(ratioX.floatValue(), ratioY.floatValue());
         }
         cropper.start(activity);
+    }
+
+    private Integer getColorArgument(MethodCall call, String argumentKey) {
+        Object object = call.argument(argumentKey);
+        if(object instanceof Long) {
+            return ((Long) object).intValue();
+        } else if(object instanceof Integer) {
+            return ((Integer) object).intValue();
+        } else {
+            return null;    
+        }
     }
 
     @Override
