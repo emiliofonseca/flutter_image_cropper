@@ -55,6 +55,7 @@ public class ImageCropperDelegate implements PluginRegistry.ActivityResultListen
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
         options.setCompressionQuality(90);
         options.setHideBottomControls(true);
+        options.setFreeStyleCropEnabled(true);
 
         if(circularCrop != null && circularCrop) {
             options.setCircleDimmedLayer(true);
