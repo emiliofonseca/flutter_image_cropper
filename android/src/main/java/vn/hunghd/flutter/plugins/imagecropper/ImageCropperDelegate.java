@@ -54,6 +54,7 @@ public class ImageCropperDelegate implements PluginRegistry.ActivityResultListen
         UCrop.Options options = new UCrop.Options();
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
         options.setCompressionQuality(90);
+        options.setHideBottomControls(true);
 
         if(circularCrop != null && circularCrop) {
             options.setCircleDimmedLayer(true);
